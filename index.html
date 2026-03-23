@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avatar Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div>
+        <h1>Avatar Generator<span class="accent">.</span></h1>
+        <p class="subtitle">AI-powered portraits — powered by Pollinations.ai</p>
+      </div>
+      <div id="authArea">
+        <button class="connect-btn" id="connectBtn">🌸 Connect with Pollinations</button>
+      </div>
+    </div>
+
+    <!-- Auth wall -->
+    <div class="auth-wall" id="authWall">
+      <div class="auth-card">
+        <div class="auth-icon">🌸</div>
+        <h2>Connect to start generating</h2>
+        <p>Sign in with Pollinations to get your free API key.<br/>You pay for your own usage — this app costs $0 to run.</p>
+        <button class="connect-btn large" id="connectBtnMain">Connect with Pollinations</button>
+        <span class="auth-note">Keys expire in 30 days · Revoke anytime from your dashboard</span>
+      </div>
+    </div>
+
+    <!-- Main app (shown after auth) -->
+    <div class="app" id="app" hidden>
+
+      <!-- Style presets -->
+      <section class="section">
+        <div class="section-label">Style</div>
+        <div class="presets" id="presets">
+          <button class="preset active" data-style="photorealistic portrait">📷 Realistic</button>
+          <button class="preset" data-style="anime style portrait">🎌 Anime</button>
+          <button class="preset" data-style="oil painting portrait">🖼️ Oil Painting</button>
+          <button class="preset" data-style="pixel art portrait">👾 Pixel Art</button>
+          <button class="preset" data-style="3D render portrait, octane render">🧊 3D Render</button>
+          <button class="preset" data-style="cyberpunk portrait, neon lights">🌆 Cyberpunk</button>
+          <button class="preset" data-style="watercolor portrait">🎨 Watercolor</button>
+          <button class="preset" data-style="fantasy portrait, digital art">🧝 Fantasy</button>
+          <button class="preset" data-style="pencil sketch portrait">✏️ Sketch</button>
+          <button class="preset" data-style="minimalist portrait, flat design">◻️ Minimal</button>
+        </div>
+      </section>
+
+      <!-- Prompt -->
+      <section class="section">
+        <div class="section-label">Describe your avatar</div>
+        <textarea id="promptInput" rows="3" placeholder="e.g. a young woman with short dark hair, confident expression…"></textarea>
+      </section>
+
+      <!-- Attribute chips -->
+      <section class="section chips-section">
+        <div class="chips-group">
+          <span class="chips-label">Setting</span>
+          <div class="chips" id="settingChips">
+            <button class="chip" data-val="plain background">Plain</button>
+            <button class="chip" data-val="cityscape background">City</button>
+            <button class="chip" data-val="nature background">Nature</button>
+            <button class="chip" data-val="space background">Space</button>
+            <button class="chip" data-val="fantasy castle background">Fantasy</button>
+          </div>
+        </div>
+        <div class="chips-group">
+          <span class="chips-label">Lighting</span>
+          <div class="chips" id="lightingChips">
+            <button class="chip" data-val="soft natural lighting">Soft</button>
+            <button class="chip" data-val="dramatic studio lighting">Dramatic</button>
+            <button class="chip" data-val="golden hour lighting">Golden</button>
+            <button class="chip" data-val="neon lighting">Neon</button>
+            <button class="chip" data-val="cinematic lighting">Cinematic</button>
+          </div>
+        </div>
+        <div class="chips-group">
+          <span class="chips-label">Mood</span>
+          <div class="chips" id="moodChips">
+            <button class="chip" data-val="friendly smile">😊 Happy</button>
+            <button class="chip" data-val="serious expression">😐 Serious</button>
+            <button class="chip" data-val="mysterious look">🌙 Mysterious</button>
+            <button class="chip" data-val="heroic pose">⚔️ Heroic</button>
+            <button class="chip" data-val="calm expression">🧘 Calm</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings row -->
+      <section class="section settings-row">
+        <div class="setting-group">
+          <label class="setting-label">Model</label>
+          <div class="model-tabs">
+            <button class="model-tab active" data-model="flux">flux</button>
+            <button class="model-tab" data-model="zimage">zimage</button>
+            <button class="model-tab" data-model="grok-imagine">grok</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">Size</label>
+          <div class="model-tabs">
+            <button class="model-tab size-tab active" data-w="512" data-h="512">512²</button>
+            <button class="model-tab size-tab" data-w="768" data-h="768">768²</button>
+            <button class="model-tab size-tab" data-w="1024" data-h="1024">1024²</button>
+            <button class="model-tab size-tab" data-w="512" data-h="768">Portrait</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">Seed</label>
+          <div class="seed-wrap">
+            <input type="number" id="seedInput" value="-1" min="-1" max="2147483647" />
+            <button id="randomSeedBtn" title="Random seed">🎲</button>
+          </div>
+        </div>
+
+        <label class="toggle-label">
+          <input type="checkbox" id="enhanceToggle" checked />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span>Enhance prompt</span>
+        </label>
+      </section>
+
+      <!-- Negative prompt -->
+      <section class="section neg-section">
+        <div class="section-label">Negative prompt <span class="optional">(optional)</span></div>
+        <input type="text" id="negativeInput" placeholder="e.g. blurry, distorted, low quality…" />
+      </section>
+
+      <!-- Generate -->
+      <button class="generate-btn" id="generateBtn">✨ Generate Avatar</button>
+
+      <!-- Result -->
+      <div class="result-area" id="resultArea" hidden>
+        <div class="loader" id="genLoader" hidden>
+          <div class="spinner"></div>
+          <span id="loaderText">Generating…</span>
+        </div>
+        <div class="error" id="genError" hidden></div>
+        <div class="result-image-wrap" id="resultImageWrap" hidden>
+          <img id="resultImage" src="" alt="Generated avatar" />
+          <div class="result-actions">
+            <a id="downloadBtn" href="" download="avatar.png" class="action-btn">⬇ Download</a>
+            <button id="rerollBtn" class="action-btn secondary">🎲 Re-roll seed</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="history-section" id="historySection" hidden>
+        <div class="section-label" style="margin-bottom:0.6rem">Recent generations</div>
+        <div class="history-grid" id="historyGrid"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
