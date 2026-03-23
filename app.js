@@ -52,8 +52,8 @@ function loadKey() {
   const keyFromUrl = hash.get('api_key');
   if (keyFromUrl) {
     saveKey(keyFromUrl);
-    // Clean the fragment from URL without reload
-    history.replaceState(null, '', location.pathname + location.search);
+    // Clean the fragment from URL without reload (may fail on file:// protocol)
+    try { history.replaceState(null, '', location.pathname + location.search); } catch {}
     return keyFromUrl;
   }
   // Fall back to localStorage
